@@ -23,39 +23,39 @@ app = Flask(__name__)
 
 @app.route('/get_data', methods=['GET'])
 def get_data():
-	todo = db.child("DHT11/Humidity").get()
-	to = todo.val()
+    todo = db.child("DHT11/Humidity").get()
+    to = todo.val()
 
-	nd = db.child("DHT11/Temperature").get()
-	k = nd.val()
+    nd = db.child("DHT11/Temperature").get()
+    k = nd.val()
 
-	last_nd = next(reversed(k.keys()))
-	last_value_nd = k[last_nd]
+    last_nd = next(reversed(k.keys()))
+    last_value_nd = k[last_nd]
 
-	last_key = next(reversed(to.keys()))
-	last_value = to[last_key]
-	data = {'nhiet_do':last_value_nd,'do_am':last_value }
-	return json.dumps(data)
-	
+    last_key = next(reversed(to.keys()))
+    last_value = to[last_key]
+    data = {'nhiet_do':last_value_nd,'do_am':last_value }
+    return json.dumps(data)
+    
 
 @app.route('/', methods=['GET'])
-def basic():
-	
-			todo = db.child("DHT11/Humidity").get()
-			to = todo.val()
-
-			nd = db.child("DHT11/Temperature").get()
-			k = nd.val()
-
-			last_nd = next(reversed(k.keys()))
-			last_value_nd = k[last_nd]
-
-			last_key = next(reversed(to.keys()))
-			last_value = to[last_key]
-			return render_template('index.html', t=[last_value,last_value_nd])
-		
-
+def basic():            
+    return render_template('index.html', t=[])
+        
+@app.route('/get_one', methods=['GET'])
+def get_data2():
+    do_am_value = db.child("DHT11/Humidity").order_by_key().limit_to_last(1).get().val()
+    first_key =  list(do_am_value.keys())[0]
+    do_am = do_am_value[first_key]
+    
+    nhiet_do_value = db.child("DHT11/Temperature").order_by_key().limit_to_last(1).get().val()
+    key_value =  list(nhiet_do_value.keys())[0]
+    nhiet_do = nhiet_do_value[key_value]
+    
+    data = {'nhiet_do': nhiet_do, 'do_am': do_am }
+    return json.dumps(data)
+    
 if __name__ == '__main__':
-	app.run(debug=True)
+    app.run(debug=True)
 
 

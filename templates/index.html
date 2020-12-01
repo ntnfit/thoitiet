@@ -26,9 +26,9 @@
 	</div>
 
 <script>
-		window.setInterval(function(){
-  			$.ajax({
-                url: '/get_data',
+	function getData(){
+		$.ajax({
+                url: '/get_one',
                 type: 'GET',
                 dataType: 'json',
                 data: {
@@ -39,7 +39,14 @@
                 
             });
 
-		}, 2000);
+	}
+	
+	$(document).ready(function(){
+		getData();
+	});
+	window.setInterval(function(){
+		getData()
+	}, 2000);
 
 		
 	</script>
